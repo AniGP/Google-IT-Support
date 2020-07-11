@@ -1,0 +1,198 @@
+Windows : 
+----------
+
+In this lab, you'll learn how to partition and format a disk drive in Windows. Knowing how to do this is a critical skill to have as an IT Support Specialist. Partitions are important because a file system can't function without one. When you acquire a new disk drive, at least one partition is required in order to be able to write files to the file system. Different partitions can then have different file formats, depending on their purpose. For example, a disk partition that acts as a swap for your main memory may have a different file format than the default user-facing file systems. Partitions, like those used for system recovery, may also have different file formats. This shows you just how important this skill is to every IT Support Specialist out there.
+
+An overview of disk partitions on Windows
+
+On Windows systems, a common practice is to use one primary partition that contains the operating system, applications, and user data. The drive letter C: is mostly used to identify this partition. Other partitions are created on the hard disk for specialized functions, like storing data of a specific type. It's also common practice to assign partition letter names in order, creating disk partition D:, E:, F:, and so on.
+
+In this lab, you'll see how this is done by partitioning an extra disk attached to the system into two partitions of 1GB and 9GB each.
+
+Partitioning a disk using control panel
+
+Windows provides tools for disk management through the GUI. Among many other administrative tasks, the Control Panel in Windows also enables users to manage storage devices attached to the system.
+
+Go ahead and open Control Panel by clicking on the Start button and selecting Control Panel.
+
+While in Control Panel, navigate to System and Security, then Administrative Tools.
+
+In the Administrative Tools window, double click on Computer Management.
+
+From here, you can manage different services in your Windows system, including storage, task manager, etc. Since we're interested in managing disks, on the left panel, under Storage, select Disk Management.
+
+You'll notice that your system has access to two disks, one of which contains unallocated space, and is labeled "Offline". You'll create partitions on this disk.
+
+To enable partitioning, the disk will first need to be mounted on the system. Right click on the left part of the disk and select Online.
+
+The disk will be mounted and automatically assigned the letter D:\. You'll further divide this disk into two partitions.
+
+Since the space is already allocated to the disk D:\, you'll need to first shrink it before a new partition can be created. Right click on the disk and select Shrink Volume.
+
+Control Panel will present you with a dialogue where you'll enter the size to shrink the disk. Enter 30,000MB to partition the disk into two partitions of 20GB and 30GB each. Click Shrink.
+
+The disk will be shrunk, and the additional 30GB space will be shown as unallocated.
+
+On this unallocated space, you'll create a new partition of 30GB in size. Right click on it and select New Simple Volume.
+
+Control Panel will present you with a partition creation dialogue. Click Next.
+
+A size specification dialogue will be presented, where you'll enter the size of the partition you want to create. Create a partition that takes up all the remaining space by accepting the default value in this dialogue. Then, click Next.
+
+In the next section of the wizard, ensure the drive letter is set to E. Click Next.
+
+In the next section of the wizard, you'll select the file format that the partition should be made up of. You'll also need to provide the label of the partition. You can provide any name you'd like, or use the default name. Leave the default partition selected, and click Next.
+
+The last section of the wizard will be presented. Ensure the Drive letter or path is set to "E:", then click Finish.
+
+The disk partitioning will be carried out, and the resulting disk configuration will be updated. The second disk now consists of two partitions: D: and E: of 20GB and 30GB, respectively. 
+
+Formatting a partition
+
+Next, you'll format a partition to a different file format.
+
+Caution!
+
+Formatting a partition is destructive, and will erase all data on the partition. Not good! Remember to always backup your data before modifying partitions on a live system.
+
+To format the partition E: to a different file format, right click on it, and select Format.
+
+Control Panel will present you with a file system formatting dialogue. In the file format drop down list, select FAT32, then click OK.
+
+A confirmation alert with a warning will be presented. To proceed with the formatting, click OK.
+
+The partition will be formatted to the selected file system type, and the final disk configuration will be shown.
+
+Linux:
+-------
+
+Blocks and partitions
+
+Before diving into the details of creating partitions and formatting them, let's kick things off with a review of blocks and partitions.
+
+Blocks
+
+Blocks are a layer of storage devices that allow individual access to each independently. They allow programs to access storage without worrying about whether the underlying hardware device is a hard drive, solid state drive, flash drive, etc.
+
+In Linux, you can view block devices and file systems attached to your system using the lsblk command. This command gathers information about all devices attached to the system, and prints them out using a tree-like structure. To view the devices attached to your VM, use the lsblk command.
+
+lsblk
+
+You'll see that your instance has two block devices attached to it (disks). Each of them is 10GB in size. The column MOUNTPOINT shows where a block device is mounted. It's from this location that files on the disk can be accessed. In this case, the MOUNTPOINT is displaying "/" against sdb, which means the second disk (sdb) is mounted at the root of the Linux file system tree. Thus, the files you're seeing on your system right now are from this disk.
+
+A first disk, sda, is also available, but it's not mounted. In this lab, you'll divide this disk into two partitions. You'll then mount one of these partitions onto the file system, so you can start accessing files from it.
+
+Note: These may be swapped for you, and your VM may be mounted on sda instead of sdb. This will change the commands used in the lab, so when you see \[MOUNT DRIVE\] replace it with your mount drive (sda or sdb) and when you see \[SECOND DRIVE\] replace it with the other one. If your VM is mounted on sda, the screenshots will also be flipped from what you will see.
+Optionally, you can view disks mounted on the system using the df command. This command is normally used to display the amount of space available on the file system. It lists all block devices with the available space on them. Use the -h option to display file sizes in human readable format.
+
+df -h
+
+Partitions
+
+Instead of using a storage block as a whole, it's common practice to divide a storage block into different partitions. Partitions can be different sizes, and formatted to different filesystems. This allows you to use a single storage device for different purposes.
+
+You can display partition information using the fdisk command. You can also use the -l option to list partitions in the block. You can pass a device name to the fdisk command to list the partitions contained in that device.
+
+To list all partitions, use fdisk -l
+
+sudo fdisk -l
+
+To list partitions contained in /dev/sdb, pass /dev/sdb to the fdisk command.
+
+sudo fdisk -l /dev/sdb
+
+fdisk displays information contained in the partition table, where information about partitions is stored.
+
+Disk partitioning with fdisk
+
+When the fdisk command is used without options, it provides a menu-driven environment for creating and deleting partitions.
+
+Mount and umount
+
+Mounting and unmounting mean making devices available or unavailable on a Linux file system. This is accomplished by the commands mount and umount. Before modifying a disk, you should first unmount it from the system, using the umount command. When modifications on the disk are done, you should mount it back onto the system. For this exercise, since the device we're partitioning isn't initially mounted, you can proceed with partitioning.
+
+Go ahead and start fdisk in interactive mode by passing the name of the disk you want to partition. In this lab, we'll partition /dev/sda
+
+Start fdisk by passing the disk you want to partition as the parameter.
+
+sudo fdisk /dev/[SECOND DRIVE]
+
+fdisk will start in interactive mode. You can use m to use help provided by the command.
+
+You can use p to show details about partitions on the disk.
+
+Enter q to exit interactive mode when you are finished exploring.
+
+Creating Partitions
+
+You'll now create new partitions using fdisk. You'll partition the second drive into two partitions: one swap partition of size 1GB, and another of size 9GB. The file system type on the second partition will be ext4.
+
+Open fdisk in interactive mode to do the partitioning:
+
+sudo fdisk /dev/[SECOND DRIVE]
+
+To create a new partition, the command control n is used. However, since all the space on the disk is currently allocated, you'll need to first free up space by deleting the default partition.
+
+Use the d command control to delete the default partition. When you issue the d command control, fdisk asks you to enter the number of partitions you want to delete. Since you only have one partition, the default one, fdisk will automatically select and delete it to continue.
+
+You're now able to create your new partitions. Enter the command control for creating a new partition, n.
+
+fdisk will present you with two options to select from: p for primary, and e for extended or logical partition. Since we want to create the partitions on the actual physical disk, select p by pressing Enter.
+
+Next, you'll need to provide the partition number for the new partition. Since it's a primary partition, it can only be labelled from 1-4. It's good practice to assign partition numbers sequentially; problems can sometimes arise with certain programs if partitions aren't ordered sequentially. Give the number 1 to this first partition by pressing Enter, or optionally entering 1.
+
+You'll then need to provide the starting sector (memory location) of the new partition, from where you want to allocate. Here, press Enter to select the default value 2048.
+
+Provide the last sector of the new partition, up to where you want to allocate. The difference between the first and last sectors makes up the total size of the partition. Disk sector represents units used to measure the size on disks. Each sector stores a fixed amount of data. In lots of hard disks, for example, a sector stores 512 bytes. To create the first 1GB partition, enter 2097200 (divide the original partition by 10).
+
+Two important things happen here: the partition size is set to 1GB, and the partition type is set to Linux. (You'll see how to change partition types in the next section.) Voila! One partition is now created. You'll now move on to the second one.
+
+Use the command control n again for a new partition.
+
+Select p for a primary partition.
+
+Select partition number 2 to issue partition numbers in sequence.
+
+Select the default partition starting sector, which is the next sector from the last partition you allocated.
+
+Also select the default last sector, which will be the last sector of the remaining disk space.
+
+The second partition is now created. Sweet!
+
+Before committing your changes, you'll change the second partition to a different partition type. You'll change the first partition type to a Linux swap type. Enter command control t to change the partition type, and select the first partition.
+
+You can use the command control L to view a list of all partition types.
+
+Enter 82 to change the partition type to ‘Linux swap / Solaris', and press Enter. Head's up: Some of the characters in the partition type name Linux swap / Solaris are truncated.
+
+The partition type will be changed to match the selection.
+
+Up to this point, you've just been editing the partition table in memory. You can use the q command here to quit fdisk without committing changes to the disk. You can also update your partitions by using the d and n commands to remove and add new partitions.
+
+You can also use the v command here to verify your changes before proceeding.
+
+If you're satisfied with the changes you've made so far, you can commit them to the disk by using the w command.
+
+Congrats! You've successfully partitioned the second disk using fdisk.
+
+The second disk device is now made up of two partitions of 1GB and 9GB, respectively.
+
+Formatting partitions using mkfs
+
+Next, you'll create different file systems in the partitions you just created. You'll do this by using the command mkfs in Linux. Multiple filesystem types exist, and it's important to know all of them, along with the functions they're best suited for. In this lab, you'll format the second partition into ext4, the most widely used Linux filesystem type.
+
+To do this, use lsblk again to find the disk you want to create the file system type in.
+
+lsblk
+
+Format the second partition in your unmounted drive (sdb2 or sda2) to ext4 using this command:
+
+sudo mkfs -t ext4 /dev/[SECOND DRIVE]2
+
+You can now mount /dev/sda2 to a location on the file system to start accessing files on it. Mount it on the directory /home/my_drive.
+
+sudo mount /dev/[SECOND DRIVE]2 /home/my_drive
+
+From now on, accessing "/home/my_drive" will be accessing files on the disk.
+
+That's it! You've successfully partitioned and formatted a disk in Linux.
