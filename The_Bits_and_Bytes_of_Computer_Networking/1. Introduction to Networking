@@ -80,11 +80,11 @@ reliability;
   ----------------------------------------------------------------------------------------------------------------------------------
   4. Transport	             Segment (TCP) / Datagram (UDP)     Reliable transmission of data segments between points on a network,                                                                     including segmentation, acknowledgement and multiplexing
    ---------------------------------------------------------------------------------------------------------------------------------
-	3. Network	                     Packet	                      Structuring and managing a multi-node network, including addressing,                                                                     routing and traffic control
+  3. Network	                     Packet	                      Structuring and managing a multi-node network, including addressing,                                                                     routing and traffic control
    ---------------------------------------------------------------------------------------------------------------------------------
   2. Data link	                     Frame	                    Reliable transmission of data frames between two nodes connected by a                                                                   physical layer
    ---------------------------------------------------------------------------------------------------------------------------------
-   1. Physical	                      Bit                       Transmission and reception of raw bit streams over a physical medium
+  1. Physical	                      Bit                       Transmission and reception of raw bit streams over a physical medium
     --------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
 * Basics of Networking Devices
